@@ -1,0 +1,14 @@
+Program structure
+
+Ranking Database: 
+  - name / id of student
+  - achieved performance
+  - subject
+  - highschool
+  - year
+
+Posts Database:
+  - id
+  - subject
+  - date
+  - text
