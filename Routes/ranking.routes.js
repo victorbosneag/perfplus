@@ -4,6 +4,6 @@ import express from 'express';
 const router = express.Router();
 
 router.post("/create", rankings.createRanking);
-
+router.get("/list", rankings.getRankings);
 
 export default router;

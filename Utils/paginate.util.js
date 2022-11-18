@@ -9,9 +9,9 @@ Accepts:
 - transform: fn to be applied to all row
 */
 
-export const paginate = async (model, pagenNr, pageSize, pageMax, search={}, order=[], transform) => {
+export const paginate = async (model, pageNr, pageSize, pageMax, search={}, order=[], transform) => {
     try{
-        const page = parseInt(pageNr, 10) || 10;
+        const page = parseInt(pageNr, 10) || 1;
         const maxSize = parseInt(pageMax, 10) || 30;
         const size = parseInt(pageSize, 10) || 10 > maxSize
             ? maxSize
@@ -21,7 +21,7 @@ export const paginate = async (model, pagenNr, pageSize, pageMax, search={}, ord
             limit: size
         }
         if (Object.keys(search).length) {
-            options = {options, ...search};
+            options['where'] = search;
         }
 
         
@@ -40,7 +40,7 @@ export const paginate = async (model, pagenNr, pageSize, pageMax, search={}, ord
             currentPage: page,
             nextPage: getNextPage(page, size, count),
             total: count,
-            limit: limit,
+            pageSize: pageSize,
             data: rows
         }
         
