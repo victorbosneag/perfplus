@@ -27,7 +27,7 @@ export const createParticipant = (req, res) => {
         //create arrays in which results of bulk create will be stored
         let errorBuffer = [];
         let createdBuffer = [];
-        let existingBuffer = [];
+        let skippedBuffer = [];
         let invalidBuffer = [];
         let cnt=0;
         const callback = () => {
@@ -35,7 +35,7 @@ export const createParticipant = (req, res) => {
             res.send({
                 errors: errorBuffer,
                 created: createdBuffer,
-                existing: existingBuffer,
+                skipped: skippedBuffer,
                 invalid: invalidBuffer
             })
         }
@@ -75,7 +75,7 @@ export const createParticipant = (req, res) => {
                 try{
                     if(!created){
                         
-                        existingBuffer.push(participant);
+                        skippedBuffer.push(participant);
                     }
                     else{
                         contestData.addParticipant(participantEntry);
