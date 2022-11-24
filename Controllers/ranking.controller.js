@@ -1,8 +1,9 @@
+import url from "url";
 import db from "../Models/index.js";
 import rankingModel from "../Models/ranking.model.js";
 import blankBody from "../Utils/blankBody.util.js";
 import typeField from "../Utils/typeField.util.js";
-
+import { paginate } from "../Utils/paginate.util.js";
 const Contest = db.contests;
 const Ranking = db.rankings;
 const Highschool = db.highschools;
@@ -106,10 +107,48 @@ export const createRanking = (req, res) => {
     
 }
 
-export const getRankings = (req, res) => {
-    const contest = req.params.contestName;
-    const highschool = req.params.hsName;
-    const nrItems = req.params.nrItems;
-    const nrPage = req.params.nrPage;
-    
+export const getRankings = async (req, res) => {
+    const queryObject = url.parse(req.url, true).query;
+    const contest = queryObject.contestName;
+    const highschool = queryObject.hsName;
+    const nrItems = queryObject.nrItems;
+    const nrPage = queryObject.nrPage;
+    //console.log(req);
+    const PAGEMAXSIZE = 100;
+    let search = {};
+    const order = [
+        ["result", "ASC"],
+        ["lastName", "ASC"],
+        ["firstName", "ASC"]
+    ]
+    try{
+        if(contest != null){
+            const contestFound = await Contest.findOne({
+                where: {
+                    contestName: contest
+                }
+            })
+            if(contestFound !== null){
+                search['contestName'] = contestFound.id;
+            }
+        }
+        if(highschool != null){
+            const highschoolFound = await Highschool.findOne({
+                where: {
+                    name: highschool
+                }
+            })
+            
+            if(highschoolFound !== null){
+                search['hsName'] = highschoolFound.id;
+
+            }
+        }
+        const pageInfo = await paginate(Ranking, nrPage, nrItems, PAGEMAXSIZE, search, order);
+        res.status(200).send(pageInfo);
+
+    }
+    catch(err){
+        console.log(err);
+    }
 }

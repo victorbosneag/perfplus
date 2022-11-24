@@ -56,25 +56,3 @@ export const deleteContest = (req, res) => {
     })
 }
 
-export const listRankings = (req, res) => {
-    const contest = req.params.contestName;
-    if(!contest){
-        res.status(400);
-        res.send("invalidContest");
-        return;
-    }
-    Contest.findOne({
-        where: {
-            contestName: contest
-        },
-        include: [
-            Ranking
-        ]
-    }).then(data => {
-        
-        console.log(data);
-        const rankings = data.rankings;
-        console.log(rankings);
-        res.send(rankings);
-    })
-}
