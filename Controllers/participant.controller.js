@@ -1,6 +1,5 @@
 import url from "url";
 import db from "../Models/index.js";
-import participantModel from "../Models/participant.model.js";
 import blankBody from "../Utils/blankBody.util.js";
 import typeField from "../Utils/typeField.util.js";
 import { paginate } from "../Utils/paginate.util.js";
