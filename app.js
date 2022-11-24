@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import contestRouter from "./Routes/contest.routes.js";
-import rankingRouter from "./Routes/ranking.routes.js";
+import participantRouter from "./Routes/participant.routes.js";
 const app = express();
 /*
 var corsOptions = {
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/contest', contestRouter);
-app.use('/api/ranking', rankingRouter);
+app.use('/api/participant', participantRouter);
 
 import db from "./Models/index.js";
 db.sequelize.sync()

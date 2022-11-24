@@ -2,7 +2,7 @@ import db from "../Models/index.js";
 import blankBody from "../Utils/blankBody.util.js";
 import typeField from "../Utils/typeField.util.js";
 const Contest = db.contests;
-const Ranking = db.rankings;
+const Participant = db.participants;
 
 
 export const createContest = (req, res) => {

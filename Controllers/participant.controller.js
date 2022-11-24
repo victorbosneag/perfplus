@@ -1,20 +1,20 @@
 import url from "url";
 import db from "../Models/index.js";
-import rankingModel from "../Models/ranking.model.js";
+import participantModel from "../Models/participant.model.js";
 import blankBody from "../Utils/blankBody.util.js";
 import typeField from "../Utils/typeField.util.js";
 import { paginate } from "../Utils/paginate.util.js";
 const Contest = db.contests;
-const Ranking = db.rankings;
+const Participant = db.participants;
 const Highschool = db.highschools;
 
-export const createRanking = (req, res) => {
+export const createParticipant = (req, res) => {
     blankBody(req, res);
-    const rankings = req.body.rankings;
+    const participants = req.body.participants;
     const contest = req.body.contest;
     //format check
     typeField(contest, 'string', res);
-    typeField(rankings,'object',res);
+    typeField(participants,'object',res);
     //find the contest specified
     Contest.findAll({
         where: {
@@ -41,58 +41,58 @@ export const createRanking = (req, res) => {
             })
         }
         //bulk create using findOrCreate to avoid adding duplicates
-        rankings.forEach(async (ranking, index, object) => {
+        participants.forEach(async (participant, index, object) => {
             let cat = false;
             //testing to see if valid hs was provided
             try{
                 var foundHighschool = await Highschool.findOne({
                     where: {
-                        name: ranking.highschool
+                        name: participant.highschool
                     }
                 });
                
                 if(foundHighschool == null){
                     
-                    invalidBuffer.push(ranking);
+                    invalidBuffer.push(participant);
                     cat = true;
                 }
                 
             }
             catch(err){
-                errorBuffer.push(ranking);
+                errorBuffer.push(participant);
                 cat = true;
             }
             //delete highschool to allow for seemless appending to db
-            delete ranking.highschool;
+            delete participant.highschool;
             //if not already processed
             if(!cat)
             {
                 
-                const [rankingEntry, created] = await Ranking.findOrCreate({
-                    where: ranking,
+                const [participantEntry, created] = await Participant.findOrCreate({
+                    where: participant,
                 })
                 
                 
                 try{
                     if(!created){
                         
-                        existingBuffer.push(ranking);
+                        existingBuffer.push(participant);
                     }
                     else{
-                        contestData.addRanking(rankingEntry);
-                        foundHighschool.addRanking(rankingEntry);
-                        createdBuffer.push(ranking);
+                        contestData.addParticipant(participantEntry);
+                        foundHighschool.addParticipant(participantEntry);
+                        createdBuffer.push(participant);
                         
                     }
                 }
                 catch(err)
                 {   
-                    errorBuffer.push(ranking);
+                    errorBuffer.push(participant);
                     console.log(err);
                 }
             }
             cnt = cnt + 1;
-            if(cnt === rankings.length){
+            if(cnt === participants.length){
                 callback();
             }
             
@@ -102,12 +102,12 @@ export const createRanking = (req, res) => {
     }).catch(err => {
         console.log(err);
         res.status(400);
-        res.send("rankingAddFail");
+        res.send("participantAddFail");
     })
     
 }
 
-export const getRankings = async (req, res) => {
+export const getParticipants = async (req, res) => {
     const queryObject = url.parse(req.url, true).query;
     const contest = queryObject.contestName;
     const highschool = queryObject.hsName;
@@ -144,7 +144,7 @@ export const getRankings = async (req, res) => {
 
             }
         }
-        const pageInfo = await paginate(Ranking, nrPage, nrItems, PAGEMAXSIZE, search, order);
+        const pageInfo = await paginate(Participant, nrPage, nrItems, PAGEMAXSIZE, search, order);
         res.status(200).send(pageInfo);
 
     }

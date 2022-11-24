@@ -1,5 +1,5 @@
 export default (db, DataTypes) => {
-    const Ranking = db.define('ranking', {
+    const Participants = db.define('participant', {
         firstName: {
             type: DataTypes.TEXT,
             allowNull: false
@@ -18,6 +18,6 @@ export default (db, DataTypes) => {
             allowNull: true
         }
     });
-    return Ranking
+    return Participants
 
 };
