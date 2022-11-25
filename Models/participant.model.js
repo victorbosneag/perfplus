@@ -7,6 +7,14 @@ export default (db, DataTypes) => {
         lastName: {
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        result: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        award: {
+            type: DataTypes.TEXT,
+            allowNull: true
         }
     });
     return Participants
