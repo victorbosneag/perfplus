@@ -17,7 +17,7 @@ export const createRanking = (req, res) => {
     //create arrays in which results of bulk create will be stored
     let errorBuffer = [];
     let createdBuffer = [];
-    let existingBuffer = [];
+    let skippedBuffer = [];
     let invalidBuffer = [];
     let cnt=0;
     const callback = () => {
@@ -25,18 +25,18 @@ export const createRanking = (req, res) => {
         res.send({
             errors: errorBuffer,
             created: createdBuffer,
-            existing: existingBuffer,
+            skipped: skippedBuffer,
             invalid: invalidBuffer
         })
     }
     //bulk create using findOrCreate to avoid adding duplicates
     rankings.forEach(async (ranking, index, object) => {
         let cat = false;
-        //testing to see if valid hs was provided
+        //testing to see if valid participant was provided
         try{
             var foundParticipant = await Participant.findOne({
                 where: {
-                    name: ranking.participantId
+                    id: ranking.participantId
                 }
             });
             
@@ -57,18 +57,18 @@ export const createRanking = (req, res) => {
         if(!cat)
         {
             
-            const [rankingEntry, created] = await Ranking.findOrCreate({
-                where: ranking,
-            })
-            
-            
             try{
+                const [rankingEntry, created] = await Ranking.findOrCreate({
+                    where: ranking,
+                })
+            
+            
                 if(!created){
                     
-                    existingBuffer.push(ranking);
+                    skippedBuffer.push(ranking);
                 }
                 else{
-                    foundParticipant.addRanking(rankingEntry);
+                    rankingEntry.addRanking(foundParticipant);
                     createdBuffer.push(ranking);
                     
                 }
@@ -87,50 +87,3 @@ export const createRanking = (req, res) => {
         
     });
 }
-/*
-export const getParticipants = async (req, res) => {
-    const queryObject = url.parse(req.url, true).query;
-    const contest = queryObject.contestName;
-    const highschool = queryObject.hsName;
-    const nrItems = queryObject.nrItems;
-    const nrPage = queryObject.nrPage;
-    //console.log(req);
-    const PAGEMAXSIZE = 100;
-    let search = {};
-    const order = [
-        ["lastName", "ASC"],
-        ["firstName", "ASC"]
-    ]
-    try{
-        if(contest != null){
-            const contestFound = await Contest.findOne({
-                where: {
-                    contestName: contest
-                }
-            })
-            if(contestFound !== null){
-                search['contestName'] = contestFound.id;
-            }
-        }
-        if(highschool != null){
-            const highschoolFound = await Highschool.findOne({
-                where: {
-                    name: highschool
-                }
-            })
-            
-            if(highschoolFound !== null){
-                search['hsName'] = highschoolFound.id;
-
-            }
-        }
-        const pageInfo = await paginate(Participant, nrPage, nrItems, PAGEMAXSIZE, search, order);
-        res.status(200).send(pageInfo);
-
-    }
-    catch(err){
-        console.log(err);
-    }
-}
-
-*/
