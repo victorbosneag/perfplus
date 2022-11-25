@@ -33,8 +33,6 @@ db.participants.belongsTo(db.contests, { foreignKey: "contestName" });
 db.highschools.hasMany(db.participants, { foreignKey: "hsName" });
 db.participants.belongsTo(db.highschools, { foreignKey: "hsName" });
 
-//rankings -> participants relationship
-db.participants.hasOne(db.rankings, {foreignKey: "id"});
-db.rankings.belongsTo(db.participants, {foreignKey: "id"});
+
 
 export default db;
