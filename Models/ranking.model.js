@@ -1,6 +1,10 @@
 export default (db, DataTypes) => {
     const Rankings = db.define('ranking', {
-        
+        participantId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: true
+        },
         result: {
             type: DataTypes.INTEGER,
             allowNull: false

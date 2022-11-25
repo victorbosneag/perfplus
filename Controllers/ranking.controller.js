@@ -7,32 +7,23 @@ import typeField from "../Utils/typeField.util.js";
 const Participant = db.participants;
 const Ranking = db.rankings;
 
-export const createRanking = (req, res) => {
+export const createRanking = async (req, res) => {
     blankBody(req, res);
     const rankings = req.body.rankings;
     //format check
     typeField(rankings,'object',res);
-    //find the contest specified
-
+    
     //create arrays in which results of bulk create will be stored
     let errorBuffer = [];
     let createdBuffer = [];
     let skippedBuffer = [];
     let invalidBuffer = [];
-    let cnt=0;
-    const callback = () => {
-        res.status(200);
-        res.send({
-            errors: errorBuffer,
-            created: createdBuffer,
-            skipped: skippedBuffer,
-            invalid: invalidBuffer
-        })
-    }
+    
     //bulk create using findOrCreate to avoid adding duplicates
-    rankings.forEach(async (ranking, index, object) => {
+    for(let i=0; i<rankings.length; i++){
+        const ranking = rankings[i];
         let cat = false;
-        //testing to see if valid participant was provided
+        //testing to see if valid hs was provided
         try{
             var foundParticipant = await Participant.findOne({
                 where: {
@@ -49,18 +40,18 @@ export const createRanking = (req, res) => {
         }
         catch(err){
             errorBuffer.push(ranking);
+            console.log(err);
             cat = true;
         }
-        //delete participant id to allow for seemless appending to db
-        delete ranking.participantId;
+        
         //if not already processed
         if(!cat)
         {
-            
             try{
                 const [rankingEntry, created] = await Ranking.findOrCreate({
                     where: ranking,
                 })
+                
             
             
                 if(!created){
@@ -68,7 +59,6 @@ export const createRanking = (req, res) => {
                     skippedBuffer.push(ranking);
                 }
                 else{
-                    rankingEntry.addRanking(foundParticipant);
                     createdBuffer.push(ranking);
                     
                 }
@@ -79,11 +69,16 @@ export const createRanking = (req, res) => {
                 console.log(err);
             }
         }
-        cnt = cnt + 1;
-        if(cnt === rankings.length){
-            callback();
-        }
         
         
-    });
+    }
+    //send op result
+    res.status(200);
+    res.send({
+        errors: errorBuffer,
+        created: createdBuffer,
+        skipped: skippedBuffer,
+        invalid: invalidBuffer
+    })
+    
 }
