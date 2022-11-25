@@ -7,7 +7,7 @@ const Contest = db.contests;
 const Participant = db.participants;
 const Highschool = db.highschools;
 
-export const createParticipant = (req, res) => {
+export const createParticipant = async (req, res) => {
     blankBody(req, res);
     const participants = req.body.participants;
     const contest = req.body.contest;
@@ -15,93 +15,87 @@ export const createParticipant = (req, res) => {
     typeField(contest, 'string', res);
     typeField(participants,'object',res);
     //find the contest specified
-    Contest.findAll({
-        where: {
-            contestName: contest
-        }
-     })
-    .then(contestData => {
-        contestData = contestData[0];
-        console.log("Found contest");
-        console.log(contestData);
-        //create arrays in which results of bulk create will be stored
-        let errorBuffer = [];
-        let createdBuffer = [];
-        let skippedBuffer = [];
-        let invalidBuffer = [];
-        let cnt=0;
-        const callback = () => {
-            res.status(200);
-            res.send({
-                errors: errorBuffer,
-                created: createdBuffer,
-                skipped: skippedBuffer,
-                invalid: invalidBuffer
-            })
-        }
-        //bulk create using findOrCreate to avoid adding duplicates
-        participants.forEach(async (participant, index, object) => {
-            let cat = false;
-            //testing to see if valid hs was provided
-            try{
-                var foundHighschool = await Highschool.findOne({
-                    where: {
-                        name: participant.highschool
-                    }
-                });
-               
-                if(foundHighschool == null){
-                    
-                    invalidBuffer.push(participant);
-                    cat = true;
-                }
-                
+    try{
+        var contestData = await Contest.findOne({
+            where: {
+                contestName: contest
             }
-            catch(err){
-                errorBuffer.push(participant);
+        })
+    }
+    catch(err){
+        console.log(err);
+        res.status(400).send("participantAddFail");
+    }
+    console.log("Found contest");
+    console.log(contestData);
+    //create arrays in which results of bulk create will be stored
+    let errorBuffer = [];
+    let createdBuffer = [];
+    let skippedBuffer = [];
+    let invalidBuffer = [];
+    
+    //bulk create using findOrCreate to avoid adding duplicates
+    for(let i=0; i<participants.length; i++){
+        const participant = participants[i];
+        let cat = false;
+        //testing to see if valid hs was provided
+        try{
+            var foundHighschool = await Highschool.findOne({
+                where: {
+                    name: participant.highschool
+                }
+            });
+            
+            if(foundHighschool == null){
+                
+                invalidBuffer.push(participant);
                 cat = true;
             }
-            //delete highschool to allow for seemless appending to db
-            delete participant.highschool;
-            //if not already processed
-            if(!cat)
-            {
-                
+            
+        }
+        catch(err){
+            errorBuffer.push(participant);
+            cat = true;
+        }
+        //delete highschool to allow for seemless appending to db
+        delete participant.highschool;
+        //if not already processed
+        if(!cat)
+        {
+            try{
                 const [participantEntry, created] = await Participant.findOrCreate({
                     where: participant,
                 })
                 
-                
-                try{
-                    if(!created){
-                        
-                        skippedBuffer.push(participant);
-                    }
-                    else{
-                        contestData.addParticipant(participantEntry);
-                        foundHighschool.addParticipant(participantEntry);
-                        createdBuffer.push(participant);
-                        
-                    }
-                }
-                catch(err)
-                {   
-                    errorBuffer.push(participant);
-                    console.log(err);
-                }
-            }
-            cnt = cnt + 1;
-            if(cnt === participants.length){
-                callback();
-            }
             
             
-        });
+                if(!created){
+                    
+                    skippedBuffer.push(participant);
+                }
+                else{
+                    console.log(contestData);
+                    contestData.addParticipant(participantEntry);
+                    foundHighschool.addParticipant(participantEntry);
+                    createdBuffer.push(participant);
+                    
+                }
+            }
+            catch(err)
+            {   
+                errorBuffer.push(participant);
+                console.log(err);
+            }
+        }
+        //send op result
         
-    }).catch(err => {
-        console.log(err);
-        res.status(400);
-        res.send("participantAddFail");
+    }
+    res.status(200);
+    res.send({
+        errors: errorBuffer,
+        created: createdBuffer,
+        skipped: skippedBuffer,
+        invalid: invalidBuffer
     })
     
 }
