@@ -3,6 +3,10 @@ export default (db, DataTypes) => {
         title: {
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        type:{
+            type: DataTypes.TEXT,
+            allowNull: false
         }
     });
     return Posts

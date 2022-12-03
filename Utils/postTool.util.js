@@ -11,7 +11,7 @@ class PostTool{
         const found = Post.findOne({
             where: { id: id }
         });
-        if(!found){
+        if(found){
             try{
                 const postObject = {
                     id: id,
@@ -20,7 +20,7 @@ class PostTool{
                     body: body
                 }
                 const jsonObject = JSON.stringify(postObject);
-                fs.writeFileSync(this.savePath.concat(id, ".json"), jsonObject);
+                fs.writeFileSync(this.savePath.concat("/", id, ".json"), jsonObject);
                 return true;
             }
             catch(err){
@@ -57,3 +57,6 @@ class PostTool{
         }
     }
 }
+
+
+export default PostTool;
