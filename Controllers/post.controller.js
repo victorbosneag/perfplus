@@ -21,10 +21,16 @@ export const createPost = async (req, res) => {
   console.log(typeof body);
   console.log(typeof contest);
 
-  typeField(title, "string", res);
-  typeField(type, "string", res);
-  typeField(body, "string", res);
-  typeField(contest, "string", res);
+  if(
+    typeField(title, "string", res) *
+    typeField(type, "string", res) *
+    typeField(body, "string", res) *
+    typeField(contest, "string", res)
+    === 0
+  )
+  {
+    return;
+  }
   //find the contest specified
   try {
     var contestData = await Contest.findOne({
@@ -72,3 +78,34 @@ export const createPost = async (req, res) => {
   
 };
 
+export const findPost = async (req,res)=>{
+  blankBody(req, res);
+  const id = req.body.id;
+  try{
+    var foundPost = await Post.findOne({
+      where: { id: id }
+    });
+    if(!foundPost){
+      return res.status(404).send("postNotFound")
+    }
+  }
+  catch(err){
+    res.status(404).send("postNotFound");
+  }
+  if(foundPost){
+    try{
+      const resp = await postContent.find(id);
+      res.status(200).send(resp);
+    }
+    catch(err){
+     
+      Post.destroy({
+        where: { id: id }
+      });
+      res.status(404).send("postContentNotFound")
+    
+    
+    }
+  }
+
+}
