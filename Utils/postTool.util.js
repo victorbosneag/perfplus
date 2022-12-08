@@ -38,22 +38,22 @@ class PostTool{
         });
         if(found){
             try{
-                const filePath = this.savePath.concat(id, ".json");
+                const filePath = this.savePath.concat("/", id, ".json");
                 const isFile = fs.lstatSync(filePath).isFile();
                 if(isFile){
                     const rawData = fs.readFileSync(filePath);
                     return JSON.parse(rawData);
                 }
                 else{
-                    return false;
+                    throw new Error("NotFile");
                 }
             }
             catch(err){
-                return false;
+                throw new Error ("NoFileFound");
             }
         }
         else{
-            return false;
+            return "false";
         }
     }
 }
