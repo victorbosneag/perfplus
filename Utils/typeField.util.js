@@ -5,5 +5,9 @@ export default (field, type, res) => {
             name: "typeField",
             fieldName: field
         })
+        return false;
+    }
+    else{
+        return true;
     }
 }
