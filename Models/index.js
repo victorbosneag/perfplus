@@ -2,6 +2,7 @@ import dbConfig  from "../Config/database.config.js";
 
 import Sequelize from "sequelize";
 import { DataTypes } from "sequelize";
+import dotenv from "dotenv";
 const sequelize = new Sequelize({
   
   dialect: dbConfig.dialect,
