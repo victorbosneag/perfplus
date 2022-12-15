@@ -134,3 +134,6 @@ Public
 
 #prettier
 .prettierrc
+
+#env files
+*.env
