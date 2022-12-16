@@ -8,6 +8,8 @@ const Participant = db.participants;
 export const createContest = (req, res) => {
     blankBody(req, res);
     //console.log(!req.body);
+    const signedin = req.body.user;
+    delete req.body.user;
     const contestInfo = req.body;
     Contest.create({
         contestName: contestInfo.contestName,
@@ -41,15 +43,20 @@ export const listContest = (req, res) => {
 
 
 export const deleteContest = (req, res) => {
-    blankBody(req, res);
+    if(!blankBody(req, res)){
+        return;
+    }
     const contest = req.body.contestName;
-    typeField(contest, 'string', res);
+    if(!typeField(contest, 'string', res)){
+        return;
+    }
     Contest.destroy({
         where: {
             contestName: contest
         }
     }).then(data => {
-        res.send(data);
+        console.log(data);
+        res.status(200).send("Success");
     }).catch(err => {
         res.status(400);
         res.send(err);
