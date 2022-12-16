@@ -11,7 +11,7 @@ export const create = async (req, res) => {
     if (!username || !email || !password ) {
       return res.json({ message: "Please enter all the details" });
     }
-    req.body["isAdmin"] = false;
+    req.body["role"] = "Teacher";
     //Check if the user already exist or not
     const userExist = await User.findOne({
       where: { email: req.body.email }});
@@ -61,7 +61,7 @@ export const login = async (req, res) => {
       return res.json({ message: "Wrong credentials" });
     }
     const token = await jwt.sign(
-      { id: userExist._id },
+      { id: userExist.id },
       process.env.SECRET_KEY,
       {
         expiresIn: process.env.JWT_EXPIRE,

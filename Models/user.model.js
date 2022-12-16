@@ -17,9 +17,10 @@ export default (db, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        isAdmin: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false
+        role: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+            isIn: [["Teacher", "Coordinator", "Admin"]]
         }
     });
     return User
