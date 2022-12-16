@@ -13,7 +13,7 @@ export default async (req,res,next)=>{
         }
         const verify = await jwt.verify(token,process.env.SECRET_KEY);
         console.log(verify);
-        req.user = await User.findOne({where:{id:verify.id}});
+        res.locals.user = await User.findOne({where:{id:verify.id}});
         next();
     } catch (error) {
        return next(error); 

@@ -8,8 +8,7 @@ const Participant = db.participants;
 export const createContest = (req, res) => {
     blankBody(req, res);
     //console.log(!req.body);
-    const signedin = req.body.user;
-    delete req.body.user;
+    const signedin = res.locals.user;
     const contestInfo = req.body;
     Contest.create({
         contestName: contestInfo.contestName,

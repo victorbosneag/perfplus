@@ -7,4 +7,5 @@ export default {
         "Chem"
     ],
     highschoolFile: "../highschools",
+    roles: ["Teacher", "Coordinator", "Admin"]
 }

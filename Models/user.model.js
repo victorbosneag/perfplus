@@ -1,3 +1,4 @@
+import datavaluesConfig from "../Config/datavalues.config.js";
 export default (db, DataTypes) => {
     const User = db.define('user', {
         username: {
@@ -20,7 +21,7 @@ export default (db, DataTypes) => {
         role: {
             type: DataTypes.TEXT,
             allowNull: false,
-            isIn: [["Teacher", "Coordinator", "Admin"]]
+            isIn: [datavaluesConfig.roles]
         }
     });
     return User
