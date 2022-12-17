@@ -40,9 +40,12 @@ export const createPost = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(400).send("postAddFail");
+    return res.status(400).send("postAddFail");
   }
-  console.log("Found contest");
+  
+  if (!contestData){
+    return res.status(400).send("invalidContest");
+  }
   console.log(contestData);
   try{
 
@@ -50,10 +53,10 @@ export const createPost = async (req, res) => {
         title: title,
         type: type
     });
-    contestData.addPost(createdPost);
+    createdPost.setContest(contestData);
   }
   catch(err){
-    res.status(400).send("postAddFail");
+    return res.status(400).send("postAddFail");
   }
   try{
     const resp = await postContent.create(createdPost.id, title, type, body);
@@ -72,7 +75,7 @@ export const createPost = async (req, res) => {
     Post.destroy({
         where: { id: createdPost.id }
     });
-    res.status(500).send("postAddAbort");
+    return res.status(500).send("postAddAbort");
 
   }
   
@@ -102,7 +105,7 @@ export const findPost = async (req,res)=>{
       Post.destroy({
         where: { id: id }
       });
-      res.status(404).send("postContentNotFound")
+      return res.status(404).send("postContentNotFound")
     
     
     }

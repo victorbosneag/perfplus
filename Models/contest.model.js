@@ -23,6 +23,8 @@ export default (db, DataTypes) => {
             allowNull: false,
             defaultValue: true
         }
+    },{
+        paranoid:true
     });
     return Contest
 

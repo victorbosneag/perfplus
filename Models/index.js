@@ -28,14 +28,15 @@ db.highschools = highschool(sequelize, DataTypes);
 db.posts = post(sequelize, DataTypes);
 
 //participants -> contests relationship
-db.contests.hasMany(db.participants, { foreignKey: "contestName" });
 db.participants.belongsTo(db.contests, { foreignKey: "contestName" });
 
 //participants -> highschools relationship
-db.highschools.hasMany(db.participants, { foreignKey: "hsName" });
 db.participants.belongsTo(db.highschools, { foreignKey: "hsName" });
 
-db.contests.hasMany(db.posts, { foreignKey: "contestName" });
-db.contests.belongsTo(db.contests, { foreignKey: "contestName" });
+//posts -> contests relationship
+db.posts.belongsTo(db.contests, { foreignKey: "contestName" });
+
+//contests -> users
+db.contests.belongsTo(db.users, {foreignKey: "userid"});
 
 export default db;

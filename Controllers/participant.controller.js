@@ -74,11 +74,13 @@ export const createParticipant = async (req, res) => {
                     skippedBuffer.push(participant);
                 }
                 else{
-                    console.log(contestData);
-                    contestData.addParticipant(participantEntry);
-                    foundHighschool.addParticipant(participantEntry);
+                    
+                    participantEntry.setContest(contestData);
+                    participantEntry.setHighschool(foundHighschool);
                     createdBuffer.push(participant);
                     
+                    
+                   
                 }
             }
             catch(err)
