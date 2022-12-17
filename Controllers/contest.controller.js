@@ -5,25 +5,26 @@ const Contest = db.contests;
 const Participant = db.participants;
 
 
-export const createContest = (req, res) => {
+export const createContest = async (req, res) => {
     blankBody(req, res);
     //console.log(!req.body);
     const signedin = res.locals.user;
     const contestInfo = req.body;
-    Contest.create({
-        contestName: contestInfo.contestName,
-        subject: contestInfo.subject,
-        year: contestInfo.year
-    })
-    .then(data => {
-        console.log(data.dataValues);
-        res.send(data.dataValues);
-        
-    })
-    .catch(err => {
-        res.status(400);
-        res.send(err);
-    })
+    try{
+        const createdContest = await Contest.create({
+            contestName: contestInfo.contestName,
+            subject: contestInfo.subject,
+            year: contestInfo.year
+        })
+        createdContest.setUser(signedin);
+        res.status(200).send(createdContest);
+
+    }
+     catch(err){
+        console.log(err);
+        res.status(500).send("addContestFailed");
+     }
+    
         
 };
 
