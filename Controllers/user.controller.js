@@ -24,7 +24,7 @@ export const create = async (req, res) => {
     const hashPassword = await bcrypt.hash(req.body.password, salt);
     req.body.password = hashPassword;
     const user = await User.create(req.body);
-    const token = await jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    const token = await jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
       expiresIn: process.env.JWT_EXPIRE,
     });
     return res
