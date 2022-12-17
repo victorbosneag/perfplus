@@ -13,14 +13,13 @@ export default (role) => {
       }
       console.log(roles);
       console.log(user.role);
-      if(!(roles.includes(user.role))){
+      if (!roles.includes(user.role)) {
         return next("Invalid role");
       }
-      if(roles.indexOf(role)>roles.indexOf(user.role))
-      {
+      if (roles.indexOf(role) > roles.indexOf(user.role)) {
         return next("Unauthorized");
       }
-      
+
       next();
     } catch (error) {
       return next(error);

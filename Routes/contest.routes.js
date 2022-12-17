@@ -1,5 +1,5 @@
 import * as contests from "../Controllers/contest.controller.js";
-import express from 'express';
+import express from "express";
 import auth from "../Middleware/auth.middleware.js";
 import role from "../Middleware/role.middleware.js";
 const router = express.Router();

@@ -7,7 +7,9 @@ import PostTool from "../Utils/postTool.util.js";
 
 const Contest = db.contests;
 const Post = db.posts;
-const postContent = new PostTool("/home/victor/Documents/Informatica/perfplus/Public/Posts");
+const postContent = new PostTool(
+  "/home/victor/Documents/Informatica/perfplus/Public/Posts"
+);
 
 export const createPost = async (req, res) => {
   blankBody(req, res);
@@ -21,14 +23,13 @@ export const createPost = async (req, res) => {
   console.log(typeof body);
   console.log(typeof contest);
 
-  if(
+  if (
     typeField(title, "string", res) *
-    typeField(type, "string", res) *
-    typeField(body, "string", res) *
-    typeField(contest, "string", res)
-    === 0
-  )
-  {
+      typeField(type, "string", res) *
+      typeField(body, "string", res) *
+      typeField(contest, "string", res) ===
+    0
+  ) {
     return;
   }
   //find the contest specified
@@ -42,73 +43,61 @@ export const createPost = async (req, res) => {
     console.log(err);
     return res.status(400).send("postAddFail");
   }
-  
-  if (!contestData){
+
+  if (!contestData) {
     return res.status(400).send("invalidContest");
   }
   console.log(contestData);
-  try{
-
+  try {
     var createdPost = await Post.create({
-        title: title,
-        type: type
+      title: title,
+      type: type,
     });
     createdPost.setContest(contestData);
-  }
-  catch(err){
+  } catch (err) {
     return res.status(400).send("postAddFail");
   }
-  try{
+  try {
     const resp = await postContent.create(createdPost.id, title, type, body);
     console.log(resp);
-    if(resp){
-        res.status(200).send("Success");
+    if (resp) {
+      res.status(200).send("Success");
+    } else {
+      Post.destroy({
+        where: { id: createdPost.id },
+      });
+      res.status(500).send("postAddAbort");
     }
-    else{
-        Post.destroy({
-            where: { id: createdPost.id }
-        });
-        res.status(500).send("postAddAbort");
-    }
-  }
-  catch(err){
+  } catch (err) {
     Post.destroy({
-        where: { id: createdPost.id }
+      where: { id: createdPost.id },
     });
     return res.status(500).send("postAddAbort");
-
   }
-  
 };
 
-export const findPost = async (req,res)=>{
+export const findPost = async (req, res) => {
   blankBody(req, res);
   const id = req.body.id;
-  try{
+  try {
     var foundPost = await Post.findOne({
-      where: { id: id }
+      where: { id: id },
     });
-    if(!foundPost){
-      return res.status(404).send("postNotFound")
+    if (!foundPost) {
+      return res.status(404).send("postNotFound");
     }
-  }
-  catch(err){
+  } catch (err) {
     res.status(404).send("postNotFound");
   }
-  if(foundPost){
-    try{
+  if (foundPost) {
+    try {
       const resp = await postContent.find(id);
       res.status(200).send(resp);
-    }
-    catch(err){
-     
+    } catch (err) {
       Post.destroy({
-        where: { id: id }
+        where: { id: id },
       });
-      return res.status(404).send("postContentNotFound")
-    
-    
+      return res.status(404).send("postContentNotFound");
     }
   }
-
-}
+};
