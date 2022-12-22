@@ -129,3 +129,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Public
+Public
+
+#prettier
+.prettierrc
+
+#env files
+*.env

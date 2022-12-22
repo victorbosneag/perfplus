@@ -1,11 +1,11 @@
-import dbConfig  from "../Config/database.config.js";
+import dbConfig from "../Config/database.config.js";
 
 import Sequelize from "sequelize";
 import { DataTypes } from "sequelize";
+import dotenv from "dotenv";
 const sequelize = new Sequelize({
-  
   dialect: dbConfig.dialect,
-  storage: dbConfig.storage
+  storage: dbConfig.storage,
 });
 
 const db = {};
@@ -13,22 +13,28 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-
 import user from "./user.model.js";
 import contest from "./contest.model.js";
-import ranking from "./ranking.model.js";
+import participant from "./participant.model.js";
 import highschool from "./highschool.model.js";
+import post from "./post.model.js";
+
 db.users = user(sequelize, DataTypes);
 db.contests = contest(sequelize, DataTypes);
-db.rankings = ranking(sequelize, DataTypes);
+db.participants = participant(sequelize, DataTypes);
 db.highschools = highschool(sequelize, DataTypes);
+db.posts = post(sequelize, DataTypes);
 
-//rankings -> contests relationship
-db.contests.hasMany(db.rankings, { foreignKey: "contestName" });
-db.rankings.belongsTo(db.contests, { foreignKey: "contestName" });
+//participants -> contests relationship
+db.participants.belongsTo(db.contests, { foreignKey: "contestName" });
 
-//rankings -> highschools relationship
-db.highschools.hasMany(db.rankings, { foreignKey: "hsName" });
-db.rankings.belongsTo(db.highschools, { foreignKey: "hsName" });
+//participants -> highschools relationship
+db.participants.belongsTo(db.highschools, { foreignKey: "hsName" });
+
+//posts -> contests relationship
+db.posts.belongsTo(db.contests, { foreignKey: "contestName" });
+
+//contests -> users
+db.contests.belongsTo(db.users, { foreignKey: "userid" });
 
 export default db;
