@@ -1,6 +1,8 @@
 import db from "../Models/index.js";
 import blankBody from "../Utils/blankBody.util.js";
+import { paginate } from "../Utils/paginate.util.js";
 import typeField from "../Utils/typeField.util.js";
+import url from "url";
 const Contest = db.contests;
 const Participant = db.participants;
 
@@ -23,14 +25,21 @@ export const createContest = async (req, res) => {
   }
 };
 
-export const listContest = (req, res) => {
-  Contest.findAll({})
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+export const listContest = async (req, res) => {
+  const queryObject = url.parse(req.url, true).query;
+  const nrItems = queryObject.nrItems;
+  const nrPage = queryObject.nrPage;
+  const PAGEMAXSIZE = 100;
+  console.log(nrItems);
+  console.log(nrPage);
+  
+  try{
+    const pageInfo = await paginate(Contest, nrPage, nrItems, PAGEMAXSIZE);
+    res.status(200).send(pageInfo)
+  }
+  catch(err){
+    res.status(500).send("findContestFail");
+  }
 };
 
 export const deleteContest = (req, res) => {
