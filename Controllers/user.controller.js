@@ -48,10 +48,13 @@ export const login = async (req, res) => {
       return res.json({ message: "Please enter all the details" });
     }
     //Check if the user already exist or not
-    const userExist = await User.findOne({ email: req.body.email });
+    const userExist = await User.findOne({
+      where: { email: req.body.email },
+    });
     if (!userExist) {
       return res.json({ message: "Wrong credentials" });
     }
+    console.log(userExist.password);
     //Check password match
     const isPasswordMatched = await bcrypt.compare(
       password,
