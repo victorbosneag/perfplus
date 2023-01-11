@@ -8,12 +8,13 @@ import postRouter from "./Routes/post.routes.js";
 import userRouter from "./Routes/user.routes.js";
 const app = express();
 dotenv.config({ path: "./config.env" });
-/*
+
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:3000"
 };
-*/
-//app.use(cors(corsOptions));
+
+app.use(cors(corsOptions));
+
 
 // parse requests of content-type - application/json
 app.use(express.json());
