@@ -137,3 +137,6 @@ Public
 
 #env files
 *.env
+
+#database files
+*.sqlite
