@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post("/create", auth, contests.createContest);
 router.get("/list", contests.listContest);
+router.get("/view", contests.getContest);
 router.delete("/delete", auth, role("Coordinator"), contests.deleteContest);
 
 export default router;

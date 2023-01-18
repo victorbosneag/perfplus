@@ -42,6 +42,17 @@ export const listContest = async (req, res) => {
   }
 };
 
+export const getContest = async (req,res) =>{
+  const queryObject = url.parse(req.url, true).query;
+  try{
+    const contests = await Contest.findAll();
+    res.status(200).send(contests);
+  }
+  catch(err){
+    res.status(500).send("findContestFail");
+  }
+}
+
 export const deleteContest = (req, res) => {
   if (!blankBody(req, res)) {
     return;
