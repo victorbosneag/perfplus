@@ -9,7 +9,7 @@ export default (role) => {
       const user = res.locals.user;
       console.log(user);
       if (!user) {
-        return next("Please loginn to access the data");
+        return next("Login");
       }
       console.log(roles);
       console.log(user.role);

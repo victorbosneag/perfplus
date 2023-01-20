@@ -8,7 +8,7 @@ export default async (req, res, next) => {
     const token = req.body.token;
     delete req.body.token;
     if (!token) {
-      return next("Please login to access the data");
+      return next("Login");
     }
     const verify = await jwt.verify(token, process.env.SECRET_KEY);
     console.log(verify);
