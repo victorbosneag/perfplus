@@ -70,6 +70,7 @@ export const login = async (req, res) => {
       success: true,
       token: token,
       message: "LoggedIn Successfully",
+      data: userExist,
     });
   } catch (error) {
     console.log(error);
