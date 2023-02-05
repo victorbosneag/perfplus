@@ -12,10 +12,11 @@ export const createContest = async (req, res) => {
   const signedin = res.locals.user;
   const contestInfo = req.body;
   try {
+    const convertedDate = new Date(contestInfo.date);
     const createdContest = await Contest.create({
       contestName: contestInfo.contestName,
       subject: contestInfo.subject,
-      year: contestInfo.year,
+      date: convertedDate,
     });
     createdContest.setUser(signedin);
     res.status(200).send(createdContest);

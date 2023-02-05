@@ -11,8 +11,8 @@ export default (db, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      year: {
-        type: DataTypes.INTEGER,
+      date: {
+        type: DataTypes.DATEONLY,
         allowNull: false,
       },
       isActive: {
