@@ -5,6 +5,18 @@ import typeField from "../Utils/typeField.util.js";
 import url from "url";
 const Contest = db.contests;
 const Participant = db.participants;
+const User = db.users;
+const mapUser = (rowData) => {
+  const newRowPromise = rowData.map(async (row) => {
+    const rowDataValue = row.dataValues;
+    const user = await User.findOne({
+      where: { id: rowDataValue["userid"] },
+    });
+    rowDataValue["username"] = user.username;
+    return rowDataValue;
+  });
+  return Promise.all(newRowPromise)
+};
 
 export const createContest = async (req, res) => {
   blankBody(req, res);
@@ -33,26 +45,32 @@ export const listContest = async (req, res) => {
   const PAGEMAXSIZE = 100;
   console.log(nrItems);
   console.log(nrPage);
-  
-  try{
-    const pageInfo = await paginate(Contest, nrPage, nrItems, PAGEMAXSIZE);
-    res.status(200).send(pageInfo)
-  }
-  catch(err){
+
+  try {
+    const pageInfo = await paginate(
+      Contest,
+      nrPage,
+      nrItems,
+      PAGEMAXSIZE,
+      undefined,
+      undefined,
+      mapUser
+    );
+    res.status(200).send(pageInfo);
+  } catch (err) {
     res.status(500).send("findContestFail");
   }
 };
 
-export const getContest = async (req,res) =>{
+export const getContest = async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
-  try{
+  try {
     const contests = await Contest.findAll();
     res.status(200).send(contests);
-  }
-  catch(err){
+  } catch (err) {
     res.status(500).send("findContestFail");
   }
-}
+};
 
 export const deleteContest = (req, res) => {
   if (!blankBody(req, res)) {
