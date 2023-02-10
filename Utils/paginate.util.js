@@ -39,7 +39,7 @@ export const paginate = async (
 
     let { count, rows } = await model.findAndCountAll(options);
     if (transform && typeof transform === "function") {
-      rows = transform(rows);
+      rows = await transform(rows);
     }
 
     return {
