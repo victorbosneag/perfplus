@@ -101,3 +101,24 @@ export const findPost = async (req, res) => {
     }
   }
 };
+
+export const listPost = async (req, res) => {
+  blankBody(req, res);
+  const contest = req.body.contest;
+  try {
+    var contestData = await Contest.findOne({
+      where: {
+        contestName: contest,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send("participantAddFail");
+  }
+  if (contestData) {
+    const postData = await Post.findAll({
+      where: { contestName: contestData.id },
+    });
+    return res.status(200).send(postData);
+  }
+};
