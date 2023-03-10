@@ -1,14 +1,13 @@
 export default (db, DataTypes) => {
-  const Highschool = db.define("highschool", {
-    name: {
+  const Posts = db.define("post", {
+    title: {
       type: DataTypes.TEXT,
       allowNull: false,
-      unique: true,
     },
-    city: {
+    type: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
   });
-  return Highschool;
+  return Posts;
 };

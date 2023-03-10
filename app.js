@@ -1,14 +1,20 @@
-import express from 'express';
-import cors from 'cors';
+import express from "express";
+import cors from "cors";
+import * as dotenv from "dotenv";
 import contestRouter from "./Routes/contest.routes.js";
+import participantRouter from "./Routes/participant.routes.js";
 import rankingRouter from "./Routes/ranking.routes.js";
+import postRouter from "./Routes/post.routes.js";
+import userRouter from "./Routes/user.routes.js";
 const app = express();
-/*
+dotenv.config({ path: "./config.env" });
+
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:3000"
 };
-*/
-//app.use(cors(corsOptions));
+
+app.use(cors(corsOptions));
+
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -16,11 +22,15 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/contest', contestRouter);
-app.use('/api/ranking', rankingRouter);
+app.use("/api/contest", contestRouter);
+app.use("/api/participant", participantRouter);
+app.use("/api/ranking", rankingRouter);
+app.use("/api/post", postRouter);
+app.use("/api/user", userRouter);
 
 import db from "./Models/index.js";
-db.sequelize.sync()
+db.sequelize
+  .sync()
   .then(() => {
     console.log("Synced db.");
   })
@@ -29,7 +39,7 @@ db.sequelize.sync()
   });
 
 const PORT = 5000;
-app.listen(PORT, function(err){
-  if (err) console.log("Error in server setup")
-    console.log("Server listening on Port", PORT);
-})
+app.listen(PORT, function (err) {
+  if (err) console.log("Error in server setup");
+  console.log("Server listening on Port", PORT);
+});
