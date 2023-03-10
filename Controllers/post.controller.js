@@ -27,7 +27,7 @@ export const createPost = async (req, res) => {
     typeField(title, "string", res) *
       typeField(type, "string", res) *
       typeField(body, "string", res) *
-      typeField(contest, "string", res) ===
+      typeField(contest, "number", res) ===
     0
   ) {
     return;
@@ -36,7 +36,7 @@ export const createPost = async (req, res) => {
   try {
     var contestData = await Contest.findOne({
       where: {
-        contestName: contest,
+        id: contest,
       },
     });
   } catch (err) {
