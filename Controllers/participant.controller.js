@@ -100,11 +100,21 @@ export const getParticipants = async (req, res) => {
   ];
   try {
     if (contest != null) {
-      const contestFound = await Contest.findOne({
-        where: {
-          contestName: contest,
-        },
-      });
+      
+      if (!isNaN(contest)) {
+        const contestNumber = parseInt(contest);
+        var contestFound = await Contest.findOne({
+          where: {
+            id: contestNumber,
+          },
+        });
+      } else {
+        var contestFound = await Contest.findOne({
+          where: {
+            contestName: contest,
+          },
+        });
+      }
       if (contestFound !== null) {
         search["contestName"] = contestFound.id;
       }
