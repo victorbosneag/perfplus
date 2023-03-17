@@ -18,12 +18,14 @@ import contest from "./contest.model.js";
 import participant from "./participant.model.js";
 import highschool from "./highschool.model.js";
 import post from "./post.model.js";
+import contestConfig from "./contestConfig.model.js";
 
 db.users = user(sequelize, DataTypes);
 db.contests = contest(sequelize, DataTypes);
 db.participants = participant(sequelize, DataTypes);
 db.highschools = highschool(sequelize, DataTypes);
 db.posts = post(sequelize, DataTypes);
+db.contestConfigs = contestConfig(sequelize, DataTypes);
 
 //participants -> contests relationship
 db.participants.belongsTo(db.contests, { foreignKey: "contestName" });
@@ -36,5 +38,8 @@ db.posts.belongsTo(db.contests, { foreignKey: "contestName" });
 
 //contests -> users
 db.contests.belongsTo(db.users, { foreignKey: "userid" });
+
+//contest config -> contests
+db.contestConfigs.belongsTo(db.contests, { foreignKey: "contestName" });
 
 export default db;

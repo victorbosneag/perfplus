@@ -6,6 +6,8 @@ import url from "url";
 const Contest = db.contests;
 const Participant = db.participants;
 const User = db.users;
+const ContestConfig = db.contestConfigs;
+
 const mapUser = (rowData) => {
   const newRowPromise = rowData.map(async (row) => {
     const rowDataValue = row.dataValues;
@@ -31,6 +33,19 @@ export const createContest = async (req, res) => {
       date: convertedDate,
     });
     createdContest.setUser(signedin);
+    let contestOptions = {
+      hasSubjects: false,
+      hasAnswers: false,
+
+    }
+    if(contestInfo.hasSubjects){
+      contestOptions.hasSubjects = true;
+    }
+    if(contestInfo.hasAnswers){
+      contestOptions.hasAnswers = true;
+    }
+    const createdContestConfig = await ContestConfig.create(contestOptions);
+    createdContestConfig.setContest(createdContest);
     res.status(200).send(createdContest);
   } catch (err) {
     console.log(err);
