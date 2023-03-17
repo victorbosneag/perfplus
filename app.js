@@ -6,6 +6,7 @@ import participantRouter from "./Routes/participant.routes.js";
 import rankingRouter from "./Routes/ranking.routes.js";
 import postRouter from "./Routes/post.routes.js";
 import userRouter from "./Routes/user.routes.js";
+import contestContentRouter from "./Routes/contestContent.routes.js";
 const app = express();
 dotenv.config({ path: "./config.env" });
 
@@ -27,6 +28,7 @@ app.use("/api/participant", participantRouter);
 app.use("/api/ranking", rankingRouter);
 app.use("/api/post", postRouter);
 app.use("/api/user", userRouter);
+app.use("/api/contestcontent", contestContentRouter);
 
 import db from "./Models/index.js";
 db.sequelize
