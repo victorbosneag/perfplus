@@ -21,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "line-reader": "^0.4.0",
     "n-readlines": "^1.0.1",
+    "node-base64-to-file": "^1.0.4",
     "nodemon": "^2.0.19",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
