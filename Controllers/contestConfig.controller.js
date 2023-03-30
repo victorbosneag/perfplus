@@ -37,6 +37,9 @@ export const parseFileUpload = async (req, res) => {
   const fileName = req.body.type;
   const contest = req.body.contest;
   const fileData = req.body.fileData;
+  if(!(fileName in posibleTypes)){
+    return res.status(400).send("Invalid file type");
+  }
   const foundContest = await Contest.findOne({
     where: { id: contest },
   });
@@ -48,7 +51,7 @@ export const parseFileUpload = async (req, res) => {
     contestSavePath = await manager.init(contest);
   } catch (err) {
     console.log("Contest folder create error");
-    return res.status(500).send("Error creating contest folder")
+    return res.status(500).send("Error creating contest folder");
   }
   if (foundContest) {
     if (signedin.role === "Admin" || foundContest.userid === signedin.id) {
@@ -61,7 +64,7 @@ export const parseFileUpload = async (req, res) => {
           console.log(filePath);
         },
         (error) => {
-          return res.status(400).send("Error parsing file content")
+          return res.status(400).send("Error parsing file content");
         }
       );
     } else {
