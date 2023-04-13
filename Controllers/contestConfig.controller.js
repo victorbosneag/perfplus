@@ -37,7 +37,7 @@ export const parseFileUpload = async (req, res) => {
   const fileName = req.body.type;
   const contest = req.body.contest;
   const fileData = req.body.fileData;
-  if(!(fileName in posibleTypes)){
+  if (!(posibleTypes.indexOf(fileName) > -1)) {
     return res.status(400).send("Invalid file type");
   }
   const foundContest = await Contest.findOne({
@@ -51,14 +51,15 @@ export const parseFileUpload = async (req, res) => {
     contestSavePath = await manager.init(contest);
   } catch (err) {
     console.log("Contest folder create error");
-    return res.status(500).send("Error creating contest folder");
+    contestSavePath = savePath + "/" + contest;
   }
   if (foundContest) {
     if (signedin.role === "Admin" || foundContest.userid === signedin.id) {
       base64toFile(fileData, {
         filePath: contestSavePath,
         fileName: fileName,
-        fileMaxSize: 3145728,
+        fileMaxSize: 31457280,
+        types: ["pdf"],
       }).then(
         (filePath) => {
           console.log(filePath);
@@ -75,4 +76,25 @@ export const parseFileUpload = async (req, res) => {
   }
 
   res.send("Success");
+};
+
+export const getFiles = async (req, res) => {
+  const queryObject = url.parse(req.url, true).query;
+  const contest = queryObject.contest;
+  const type = queryObject.type;
+  try {
+    const targetFilePath = savePath + "/" + contest + "/" + type + ".pdf";
+    fs.readFile(targetFilePath, (err, content)=>{
+      if(err){
+        return res.status.send("File fetch failed");
+      } else{
+        res.writeHead(200, {"Content-type": "application/pdf"});
+        res.end(content)
+      }
+
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("File fetch failed");
+  }
 };
