@@ -77,3 +77,9 @@ export const login = async (req, res) => {
     return res.json({ error: error });
   }
 };
+
+export const info = async (req, res) =>{
+  let signedin = res.locals.user;
+  signedin.password = "";
+  return res.json(signedin);
+}
