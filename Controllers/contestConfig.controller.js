@@ -86,7 +86,7 @@ export const getFiles = async (req, res) => {
     const targetFilePath = savePath + "/" + contest + "/" + type + ".pdf";
     fs.readFile(targetFilePath, (err, content)=>{
       if(err){
-        return res.status.send("File fetch failed");
+        return res.status(500).send("File fetch failed");
       } else{
         res.writeHead(200, {"Content-type": "application/pdf"});
         res.end(content)

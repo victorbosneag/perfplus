@@ -7,6 +7,24 @@ const Contest = db.contests;
 const Participant = db.participants;
 const Highschool = db.highschools;
 
+const mapContest = (rowData) => {
+  const newRowPromise = rowData.map(async (row) => {
+    const rowDataValue = row.dataValues;
+    let contestName = null;
+    try {
+      const contest = await Contest.findOne({
+        where: { id: rowDataValue["contestName"] },
+      });
+      contestName = contest.contestName;
+    } catch (err) {
+      contestName = "";
+    }
+    rowDataValue["realContestName"] = contestName;
+    return rowDataValue;
+  });
+  return Promise.all(newRowPromise);
+};
+
 export const createParticipant = async (req, res) => {
   blankBody(req, res);
   const participants = req.body.participants;
@@ -100,7 +118,6 @@ export const getParticipants = async (req, res) => {
   ];
   try {
     if (contest != null) {
-      
       if (!isNaN(contest)) {
         const contestNumber = parseInt(contest);
         var contestFound = await Contest.findOne({
@@ -136,7 +153,8 @@ export const getParticipants = async (req, res) => {
       nrItems,
       PAGEMAXSIZE,
       search,
-      order
+      order,
+      mapContest
     );
     res.status(200).send(pageInfo);
   } catch (err) {

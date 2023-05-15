@@ -108,7 +108,7 @@ export const listPost = async (req, res) => {
   try {
     var contestData = await Contest.findOne({
       where: {
-        contestName: contest,
+        id: contest,
       },
     });
   } catch (err) {
