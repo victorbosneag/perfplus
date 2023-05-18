@@ -22,7 +22,7 @@ export const paginate = async (
     const page = parseInt(pageNr, 10) || 1;
     const maxSize = parseInt(pageMax, 10) || 30;
     const size =
-      parseInt(pageSize, 10) || 10 > maxSize
+      (parseInt(pageSize, 10) || 10) > maxSize
         ? maxSize
         : parseInt(pageSize, 10) || 10;
     let options = {
