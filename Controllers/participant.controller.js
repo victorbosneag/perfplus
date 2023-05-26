@@ -113,6 +113,7 @@ export const getParticipants = async (req, res) => {
   const PAGEMAXSIZE = 100;
   let search = {};
   const order = [
+    ["result", "ASC NULLS LAST"],
     ["lastName", "ASC"],
     ["firstName", "ASC"],
   ];

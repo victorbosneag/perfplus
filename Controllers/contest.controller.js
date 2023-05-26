@@ -61,6 +61,9 @@ export const listContest = async (req, res) => {
   console.log(nrItems);
   console.log(nrPage);
 
+  const order = [
+    ["date", "DESC NULLS LAST"],
+  ];
   try {
     const pageInfo = await paginate(
       Contest,
@@ -68,7 +71,7 @@ export const listContest = async (req, res) => {
       nrItems,
       PAGEMAXSIZE,
       undefined,
-      undefined,
+      order,
       mapUser
     );
     res.status(200).send(pageInfo);
