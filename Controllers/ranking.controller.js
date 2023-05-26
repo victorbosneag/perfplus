@@ -8,6 +8,8 @@ const Contest = db.contests;
 const Participant = db.participants;
 const Highschool = db.highschools;
 
+const LockParticipant = false;
+
 export const createRanking = async (req, res) => {
   blankBody(req, res);
   const rankings = req.body.rankings;
@@ -43,9 +45,11 @@ export const createRanking = async (req, res) => {
       cat = true;
     }
     console.log(foundParticipant.result);
-    if (foundParticipant.result) {
-      skippedBuffer.push(ranking);
-      cat = true;
+    if(LockParticipant) {
+      if (foundParticipant.result) {
+        skippedBuffer.push(ranking);
+        cat = true;
+      }
     }
     //if not already processed
 
