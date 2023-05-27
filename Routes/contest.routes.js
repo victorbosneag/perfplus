@@ -4,7 +4,7 @@ import auth from "../Middleware/auth.middleware.js";
 import role from "../Middleware/role.middleware.js";
 const router = express.Router();
 
-router.post("/create", auth, contests.createContest);
+router.post("/create", auth, role("Coordinator"), contests.createContest);
 router.get("/list", contests.listContest);
 router.get("/view", contests.getContest);
 router.get("/find", contests.findContest);
