@@ -7,7 +7,7 @@ const Contest = db.contests;
 const Participant = db.participants;
 const Highschool = db.highschools;
 
-const mapContest = (rowData) => {
+const mapFields = (rowData) => {
   const newRowPromise = rowData.map(async (row) => {
     const rowDataValue = row.dataValues;
     let contestName = null;
@@ -19,7 +19,17 @@ const mapContest = (rowData) => {
     } catch (err) {
       contestName = "";
     }
+    let highschoolName = null;
+    try {
+      const highschool = await Highschool.findOne({
+        where: { id: rowDataValue["hsName"] },
+      });
+      highschoolName = highschool.name;
+    } catch (err) {
+      highschoolName = "";
+    }
     rowDataValue["realContestName"] = contestName;
+    rowDataValue["realHighschoolName"] = highschoolName;
     return rowDataValue;
   });
   return Promise.all(newRowPromise);
@@ -155,7 +165,7 @@ export const getParticipants = async (req, res) => {
       PAGEMAXSIZE,
       search,
       order,
-      mapContest
+      mapFields
     );
     res.status(200).send(pageInfo);
   } catch (err) {
