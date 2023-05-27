@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 router.get("/config", contestConfig.getContestConfig);
-router.post("/upload",auth, role("Teacher"), contestConfig.parseFileUpload);
+router.post("/upload",auth, role("Coordinator"), contestConfig.parseFileUpload);
 router.get("/get", contestConfig.getFiles);
 
 export default router;
