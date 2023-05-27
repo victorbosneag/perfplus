@@ -44,3 +44,12 @@ Biblioteci folosite:
 - body-parser
 - n-readline
 - node-base64-to-file
+
+-------------
+Instructiuni de instalare
+```
+npm install
+node app.js
+node loadhs.js licee3
+node app.js
+```
